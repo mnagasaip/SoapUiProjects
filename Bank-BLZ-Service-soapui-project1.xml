@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="6ba671a0-7fff-48da-826f-a90554554905" activeEnvironment="Default" name="Bank BLZ Service" resourceRoot="" soapui-version="5.6.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b02a977c-8d8b-4058-a219-87971c7a20c0" wsaVersion="NONE" name="BLZServiceSOAP11Binding" type="wsdl" bindingName="{http://thomas-bayer.com/blz/}BLZServiceSOAP11Binding" soapVersion="1_1" anonymous="optional" definition="http://www.thomas-bayer.com/axis2/services/BLZService?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://www.thomas-bayer.com/axis2/services/BLZService</con:endpoint></con:endpoints><con:operation id="1cd883de-8ad2-4f39-98d2-cd70b9aa1e60" isOneWay="false" action="" name="getBank" bindingOperationName="getBank" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9970902b-136d-4fe4-a20f-27853ae2124a" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://www.thomas-bayer.com/axis2/services/BLZService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:blz="http://thomas-bayer.com/blz/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <blz:getBank>\r
+         <blz:blz>66090800</blz:blz>\r
+      </blz:getBank>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://thomas-bayer.com/blz/BLZServicePortType/getBankRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="0139767a-f67a-4a9c-a0e9-a77b87190368" name="BLZServiceSOAP11Binding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="7abd8b08-3683-4a33-87c5-a1925e9b50cc" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="getBank TestCase" searchProperties="true"><con:settings/><con:testStep type="request" id="66ced6e9-9deb-4606-a7be-12021e502ec1" name="getBank"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>BLZServiceSOAP11Binding</con:interface><con:operation>getBank</con:operation><con:request name="getBank" id="6b06a41e-c68c-4b21-b51d-9685d255136d"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://www.thomas-bayer.com/axis2/services/BLZService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:blz="http://thomas-bayer.com/blz/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <blz:getBank>\r
+         <blz:blz>${#TestCase#BLZ Sort Code}</blz:blz>\r
+      </blz:getBank>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:assertion type="Simple Contains" id="aa1e24c8-d1bb-4b69-ac47-34144e854251" name="Contains"><con:configuration><token>BBBank</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="http://thomas-bayer.com/blz/BLZServicePortType/getBankRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="groovy" name="Req Groovy Script" id="208f3214-5a7e-4e21-b16e-f49c36d4eb28"><con:settings/><con:config><script>def status=testRunner.runTestStepByName("getBank")
+def result=status.getStatus().toString()
+log.info("Result::"+result)
+
+if(result == "OK")
+{
+	log.info("Test Passed")
+}
+else{
+	log.info("Test Failed")
+}</script></con:config></con:testStep><con:properties><con:property><con:name>BLZ Sort Code</con:name><con:value>66090800</con:value></con:property></con:properties></con:testCase><con:testCase id="a2e15fb5-4bcb-4de6-90d8-2048a5d10dd1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Groovy DDT for getBank TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="Groovy Script" id="1fcd7e6b-3e43-4a84-8023-2b647d0733b5"><con:settings/><con:config><script>import jxl.*
+import java.io.*
+
+def count
+def TestCase = context.testCase
+def filepath = "D:\\Bankcodes.xls"
+
+Workbook wb = Workbook.getWorkbook(new File(filepath))
+Sheet s1 = wb.getSheet(0)
+PropertiesTestStep = TestCase.getTestStepByName("Properties")
+count = PropertiesTestStep.getPropertyValue("Counter").toInteger()
+
+if(PropertiesTestStep.getPropertyValue("Total").toString() =="")
+PropertiesTestStep.setPropertyValue("Total", s1.getRows().toString())
+
+count++
+
+Cell Field1 = s1.getCell(0,count)
+Cell Field2 = s1.getCell(1,count)
+
+log.info("Count is:: "+count.toString() + "BLZ Sort Code::" + Field1.getContents() + "Bank Name::" + Field2.getContents())
+wb.close()
+
+PropertiesTestStep.setPropertyValue("BLZ Sort Code", Field1.getContents())
+PropertiesTestStep.setPropertyValue("Bank Name", Field2.getContents())
+
+PropertiesTestStep.setPropertyValue("Counter", count.toString())
+
+if(count == PropertiesTestStep.getPropertyValue("Total").toInteger()-1)
+
+PropertiesTestStep.setPropertyValue("End", "True")</script></con:config></con:testStep><con:testStep type="request" id="b0a4b933-5c2b-4cd6-863e-42661fa01f47" name="getBank"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>BLZServiceSOAP11Binding</con:interface><con:operation>getBank</con:operation><con:request name="getBank" id="6b06a41e-c68c-4b21-b51d-9685d255136d"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://www.thomas-bayer.com/axis2/services/BLZService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:blz="http://thomas-bayer.com/blz/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <blz:getBank>\r
+         <blz:blz>${#TestCase#BLZ Sort Code}</blz:blz>\r
+      </blz:getBank>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:assertion type="Simple Contains" id="aa1e24c8-d1bb-4b69-ac47-34144e854251" name="Contains"><con:configuration><token>BBBank</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="http://thomas-bayer.com/blz/BLZServicePortType/getBankRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="properties" name="Properties" id="d5b46a6f-d43d-4456-8db1-28ef4416c0dd"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>BLZ Sort Code</con:name><con:value/></con:property><con:property><con:name>Bank Name</con:name><con:value/></con:property><con:property><con:name>Counter</con:name><con:value>0</con:value></con:property><con:property><con:name>Total</con:name><con:value/></con:property><con:property><con:name>End</con:name><con:value>False</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script Data Loop" id="d551cc6c-6c07-4e62-bf30-d9eec70d3bfd"><con:settings/><con:config><script>def TestCase = context.testCase
+
+PropertiesTestStep = TestCase.getTestStepByName("Properties")
+stop = PropertiesTestStep.getPropertyValue("End").toString()
+
+if(stop == "True")
+log.info("Exit Groovy Script - DataLoop")
+else
+testRunner.gotoStepByName("Groovy Script")</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
